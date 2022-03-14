@@ -1,18 +1,33 @@
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::Path;
-use std::fs::OpenOptions;
+/*
+    Project: tmills-file
+    Author: tmills9208
+    Date: 03-14-2022 (pi, lol)
+    Description: 
+        So far, a simple CLI application that can perform reading, writing and over-writing to files.
+    While using no other dependencies to keep the application limited to the standard rust library.
+*/
+
+mod lib;
+
+use std::env;
+use lib::file_controller;
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let flag = &args[1];
+    let file_path = &args[2];
+    let input = &args[3];
 
     // Options are preferred, to show that they either contain a type, or nothing. no more nulls :p
-    let hello: Option<&str> = Some("Hello, web browsers!");
+    // let hello: Option<&str> = Some("Hello, web browsers!");
 
     // Use mutable when you know if the variable will be change beyon compile time
-    let mut result: &str = match hello {
-        Some(ref x) => x,
-        None => ""
-    };
+    // let mut result: &str = match hello {
+    //     Some(ref x) => x,
+    //     None => ""
+    // };
+    
     // Since its not being dynamically used, it is unneeded and you can simply reassign it
     // by simply having let be declared for the same variable again.
     // like below:
@@ -22,44 +37,25 @@ fn main() {
     // };
 
     // This will work too, may be even simpler just for single strings
-    result = hello.map(|m| &m[..]).unwrap_or("");
+    // result = hello.map(|m| &m[..]).unwrap_or("");
 
     // requires a string of type: &str
-    println!("{}\n\n", result);
+    // println!("{}\n\n", result);
 
-    let file_path = "./hello.txt";
-    read_from_file(&file_path);
-
-    let new_line = "Oh ho ho! A new line! Where did I come from? 🦀\n";
-    write_line_to_file(&file_path, &new_line);
-}
-
-fn write_line_to_file(_path: &str, _content: &str) -> () {
-    let path = Path::new(_path);
-    let mut file = match OpenOptions::new()
-        .write(true)
-        .append(true)
-        .open(&path) {
-            Ok(file) => file,
-            Err(err) => panic!("Couldn't open file at {}: {}\n", path.display(), err)
-        };
-    
-    match file.write(&_content.as_bytes()) {
-        Ok(size) => print!("Successfully wrote to {}.\nSize of: {}\n", path.display(), size),
-        Err(err) => panic!("Couldn't write string to file, at {}: {}\n", path.display(), err)
+    // let file_path = "./hello.txt";
+    if (flag == "read" || flag == "-r") {
+        file_controller::read_from_file(&file_path);
     }
-}
-
-fn read_from_file(_path: &str) -> () {
-    let path = Path::new(_path);
-    let mut file = match File::open(&path) {
-        Ok(file) => file,
-        Err(err) => panic!("Couldn't open file at {}: {}\n", path.display(), err)
-    };
-    
-    let mut result = String::new();
-    match file.read_to_string(&mut result) {
-        Ok(size) => print!("{} contains:\n{}\nSize of: {}\n", path.display(), result, size),
-        Err(err) => panic!("Couldn't read from file to string at {}: {}\n", path.display(), err)
+    if (flag == "write" || flag == "-w") {
+        let new_line = format!("{}", &input);
+        file_controller::write_to_file(&file_path, &new_line);
+    }
+    if (flag == "overwrite" || flag == "-ow") {
+        let new_line = format!("{}", &input);
+        file_controller::overwrite_to_file(&file_path, &new_line);
+    }
+    if (flag == "writeline" || flag == "-wl") {
+        let new_line = format!("{}\n", &input);
+        file_controller::write_to_file(&file_path, &new_line);
     }
 }
