@@ -2,15 +2,15 @@
     Project: tmills-file
     Author: tmills9208
     Date: 03-14-2022 (pi, lol)
-    Description: 
+    Description:
         So far, a simple CLI application that can perform reading, writing and over-writing to files.
     While using no other dependencies to keep the application limited to the standard rust library.
 */
 
 mod lib;
 
-use std::env;
 use lib::file_controller;
+use std::env;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -24,18 +24,29 @@ fn main() {
     }
     if (flag == "write" || flag == "-w") {
         let new_line = format!("{}", &input);
-        file_controller::write_to_file(&file_path, &new_line);
+        file_controller::write_to_file(&file_path, &new_line, false);
     }
     if (flag == "overwrite" || flag == "-ow") {
         let new_line = format!("{}", &input);
-        file_controller::overwrite_to_file(&file_path, &new_line);
+        file_controller::overwrite_to_file(&file_path, &new_line, false);
     }
     if (flag == "writeline" || flag == "-wl") {
         let new_line = format!("{}\n", &input);
-        file_controller::write_to_file(&file_path, &new_line);
+        file_controller::write_to_file(&file_path, &new_line, false);
+    }
+    if (flag == "write-silent" || flag == "-ws") {
+        let new_line = format!("{}", &input);
+        file_controller::write_to_file(&file_path, &new_line, true);
+    }
+    if (flag == "overwrite-silent" || flag == "-ows") {
+        let new_line = format!("{}", &input);
+        file_controller::overwrite_to_file(&file_path, &new_line, true);
+    }
+    if (flag == "writeline-silent" || flag == "-wls") {
+        let new_line = format!("{}\n", &input);
+        file_controller::write_to_file(&file_path, &new_line, false);
     }
 }
-
 
 // Im just going to keep this here, just some notes I was taking, but have no where else to put them atm.
 
